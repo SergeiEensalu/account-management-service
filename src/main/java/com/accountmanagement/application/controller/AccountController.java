@@ -11,10 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-
 @RestController
-@RequestMapping("/api/v1/accounts")
+@RequestMapping("/api/v1")
 public class AccountController {
 
     private final CreateAccountUseCase createAccountUseCase;
@@ -31,7 +29,7 @@ public class AccountController {
         this.accountMapper = accountMapper;
     }
 
-    @PostMapping
+    @PostMapping("/accounts")
     public ResponseEntity<ApiResponse<AccountDto>> createAccount(@Valid @RequestBody AccountDto dto) {
         Account domain = accountMapper.toDomain(dto);
         Account created = createAccountUseCase.execute(domain);
@@ -42,7 +40,7 @@ public class AccountController {
                 .body(ApiResponse.created("Account created successfully", accountMapper.toDto(created)));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/account/{id}")
     public ResponseEntity<ApiResponse<AccountDto>> getAccountById(@PathVariable Long id) {
         Account account = getAccountByIdUseCase.execute(id);
 
