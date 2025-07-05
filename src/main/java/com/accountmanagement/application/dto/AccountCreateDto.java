@@ -16,7 +16,6 @@ public class AccountCreateDto {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Phone number is required")
     @Pattern(
             regexp = "^\\+?[0-9]{7,15}$",
             message = "Phone number must be valid"
