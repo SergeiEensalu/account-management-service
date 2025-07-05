@@ -3,6 +3,7 @@ package com.accountmanagement.application.exception;
 import com.accountmanagement.application.response.ApiResponse;
 
 import com.accountmanagement.domain.exception.AccountAlreadyExistsException;
+import com.accountmanagement.domain.exception.AccountNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,13 @@ public class GlobalExceptionHandler {
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
                 .toList();
 
-        ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .status(HttpStatus.BAD_REQUEST.value())
-                .message("Validation failed")
-                .errors(errors)
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.badRequest().body(
+                ApiResponse.error(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Validation failed",
+                        errors
+                )
+        );
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -41,37 +41,41 @@ public class GlobalExceptionHandler {
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .toList();
 
-        ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .status(HttpStatus.BAD_REQUEST.value())
-                .message("Validation constraint failed")
-                .errors(errors)
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.badRequest().body(
+                ApiResponse.error(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Validation constraint failed",
+                        errors
+                )
+        );
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGenericException(Exception ex) {
-        ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .message("Something went wrong")
-                .errors(List.of(ex.getMessage()))
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                ApiResponse.error(
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        "Something went wrong",
+                        List.of(ex.getMessage())
+                )
+        );
     }
 
     @ExceptionHandler(AccountAlreadyExistsException.class)
     public ResponseEntity<ApiResponse<Void>> handleAccountExists(AccountAlreadyExistsException ex) {
-        ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .status(HttpStatus.CONFLICT.value())
-                .message("Account already exists")
-                .errors(List.of(ex.getMessage()))
-                .timestamp(LocalDateTime.now())
-                .build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponse.error(
+                        HttpStatus.CONFLICT.value(),
+                        "Account already exists",
+                        List.of(ex.getMessage())
+                )
+        );
+    }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccountNotFound(AccountNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ApiResponse.error(HttpStatus.NOT_FOUND.value(), "Account not found", List.of(ex.getMessage()))
+        );
     }
 }

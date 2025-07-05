@@ -1,6 +1,7 @@
 package com.accountmanagement.domain.service;
 
 import com.accountmanagement.domain.exception.AccountAlreadyExistsException;
+import com.accountmanagement.domain.exception.AccountNotFoundException;
 import com.accountmanagement.domain.model.Account;
 import com.accountmanagement.domain.repository.AccountPort;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,10 @@ public class AccountService {
         }
 
         return accountPort.save(account);
+    }
+
+    public Account getById(Long id) {
+        return accountPort.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException("Account with ID " + id + " not found"));
     }
 }
