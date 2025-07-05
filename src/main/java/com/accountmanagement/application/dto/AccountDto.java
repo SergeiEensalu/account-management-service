@@ -13,12 +13,13 @@ public class AccountDto {
 
     private Long id;
 
-    @NotBlank(message = "Name must not be blank")
+    @NotBlank(message = "Name is required")
     private String name;
 
+    @NotBlank(message = "Phone number is required")
     @Pattern(
             regexp = "^\\+?[0-9]{7,15}$",
-            message = "Phone number must be valid (7–15 digits, optional +)"
+            message = "Phone number must be valid"
     )
     private String phoneNumber;
 }
