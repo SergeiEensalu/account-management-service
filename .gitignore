@@ -37,3 +37,4 @@ build
 # IntelliJ IDEA
 .idea/
 *.iml
+/out/
