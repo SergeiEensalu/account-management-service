@@ -5,7 +5,8 @@ import com.accountmanagement.domain.model.Account;
 import java.util.Optional;
 
 public interface AccountPort {
-    Account save(Account account);
+    Account create(Account account);
+    Account update(Account account);
 
     Optional<Account> findById(Long id);
 

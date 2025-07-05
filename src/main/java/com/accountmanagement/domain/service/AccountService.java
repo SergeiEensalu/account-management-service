@@ -2,6 +2,7 @@ package com.accountmanagement.domain.service;
 
 import com.accountmanagement.domain.exception.AccountAlreadyExistsException;
 import com.accountmanagement.domain.exception.AccountNotFoundException;
+import com.accountmanagement.domain.exception.NothingToUpdateException;
 import com.accountmanagement.domain.model.Account;
 import com.accountmanagement.domain.repository.AccountPort;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class AccountService {
             throw new AccountAlreadyExistsException("Account with phone number already exists");
         }
 
-        return accountPort.save(account);
+        return accountPort.create(account);
     }
 
     public Account getById(Long id) {
@@ -30,12 +31,38 @@ public class AccountService {
     }
 
     public Account updateAccount(Long id, Account updatedAccount) {
+
+        // Comment by S.Eensalu: Before updating, make sure the account exists
         Account existing = accountPort.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException("Account with id " + id + " not found"));
 
-        existing.setName(updatedAccount.getName());
-        existing.setPhoneNumber(updatedAccount.getPhoneNumber());
+        boolean isSameName = updatedAccount.getName() == null || updatedAccount.getName().equals(existing.getName());
+        boolean isSamePhone = updatedAccount.getPhoneNumber() == null || updatedAccount.getPhoneNumber().equals(existing.getPhoneNumber());
 
-        return accountPort.save(existing);
+        if (isSameName && isSamePhone) {
+            // Comment by S.Eensalu: Nothing changed — return error
+            throw new NothingToUpdateException("No changes provided for update");
+        }
+
+        if (!isSameName) {
+            existing.setName(updatedAccount.getName());
+        }
+
+        if (!isSamePhone) {
+            // Comment by S.Eensalu: To show different implementation options, I implement this product in the way,
+            // that phone number is unique (yes, i can use database for unique definition, but let's also try this way),
+            // but here I check if new phone number is already taken
+
+            accountPort.findByPhoneNumber(updatedAccount.getPhoneNumber())
+                    .ifPresent(existingAccount -> {
+                        if (!existingAccount.getId().equals(id)) {
+                            throw new AccountAlreadyExistsException("Phone number already in use");
+                        }
+                    });
+
+            existing.setPhoneNumber(updatedAccount.getPhoneNumber());
+        }
+
+        return accountPort.update(existing);
     }
 }

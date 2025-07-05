@@ -4,9 +4,7 @@ import com.accountmanagement.domain.model.Account;
 import com.accountmanagement.domain.repository.AccountPort;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 public class AccountPersistenceAdapter implements AccountPort {
@@ -18,10 +16,22 @@ public class AccountPersistenceAdapter implements AccountPort {
     }
 
     @Override
-    public Account save(Account account) {
+    public Account create(Account account) {
         AccountEntity entity = toEntity(account);
         AccountEntity saved = jpaRepository.save(entity);
         return toDomain(saved);
+    }
+
+    @Override
+    public Account update(Account account) {
+        AccountEntity existing = jpaRepository.findById(account.getId())
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        existing.setName(account.getName());
+        existing.setPhoneNumber(account.getPhoneNumber());
+
+        AccountEntity updated = jpaRepository.save(existing);
+        return toDomain(updated);
     }
 
     @Override
