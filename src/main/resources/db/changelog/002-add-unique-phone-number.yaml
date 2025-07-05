@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002
+      author: Sergei Eensalu
+      changes:
+        - addUniqueConstraint:
+            tableName: accounts
+            columnNames: phone_number
+            constraintName: uk_accounts_phone_number
