@@ -9,7 +9,8 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
     Account toDomain(AccountCreateDto dto);
-    Account toDomain(AccountUpdateDto dto);
-    AccountDto toDto(Account domain);
 
+    Account toDomain(AccountUpdateDto dto);
+
+    AccountDto toDto(Account domain);
 }
