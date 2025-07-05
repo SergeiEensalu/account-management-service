@@ -30,6 +30,13 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException("Account with ID " + id + " not found"));
     }
 
+    public void deleteAccount(Long id) {
+        accountPort.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException("Account with id " + id + " not found"));
+
+        accountPort.deleteById(id);
+    }
+
     public Account updateAccount(Long id, Account updatedAccount) {
 
         // Comment by S.Eensalu: Before updating, make sure the account exists

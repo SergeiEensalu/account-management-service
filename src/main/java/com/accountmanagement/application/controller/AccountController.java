@@ -7,6 +7,7 @@ import com.accountmanagement.application.mapper.AccountMapper;
 import com.accountmanagement.application.response.ApiResponse;
 import com.accountmanagement.domain.model.Account;
 import com.accountmanagement.usecase.CreateAccountUseCase;
+import com.accountmanagement.usecase.DeleteAccountUseCase;
 import com.accountmanagement.usecase.GetAccountByIdUseCase;
 import com.accountmanagement.usecase.UpdateAccountUseCase;
 import jakarta.validation.Valid;
@@ -21,17 +22,20 @@ public class AccountController {
     private final CreateAccountUseCase createAccountUseCase;
     private final GetAccountByIdUseCase getAccountByIdUseCase;
     private final UpdateAccountUseCase updateAccountUseCase;
+    private final DeleteAccountUseCase deleteAccountUseCase;
     private final AccountMapper accountMapper;
 
     public AccountController(
             CreateAccountUseCase createAccountUseCase,
             GetAccountByIdUseCase getAccountByIdUseCase,
             UpdateAccountUseCase updateAccountUseCase,
+            DeleteAccountUseCase deleteAccountUseCase,
             AccountMapper accountMapper
     ) {
         this.createAccountUseCase = createAccountUseCase;
         this.getAccountByIdUseCase = getAccountByIdUseCase;
         this.updateAccountUseCase = updateAccountUseCase;
+        this.deleteAccountUseCase = deleteAccountUseCase;
         this.accountMapper = accountMapper;
     }
 
@@ -66,6 +70,16 @@ public class AccountController {
         // Comment by S.Eensalu: Unified response format.
         return ResponseEntity.ok(
                 ApiResponse.success("Account updated successfully", accountMapper.toDto(updated))
+        );
+    }
+
+    @DeleteMapping("/accounts/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteAccount(@PathVariable Long id) {
+        deleteAccountUseCase.execute(id);
+
+        // Comment by S.Eensalu: Unified response format.
+        return ResponseEntity.ok(
+                ApiResponse.success("Account deleted successfully", null)
         );
     }
 }
