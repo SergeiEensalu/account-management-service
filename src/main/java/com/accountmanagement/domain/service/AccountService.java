@@ -7,6 +7,8 @@ import com.accountmanagement.domain.model.Account;
 import com.accountmanagement.domain.repository.AccountPort;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AccountService {
 
@@ -17,37 +19,30 @@ public class AccountService {
     }
 
     public Account createAccount(Account account) {
-        if (account.getPhoneNumber() != null &&
-                accountPort.findByPhoneNumber(account.getPhoneNumber()).isPresent()) {
-            throw new AccountAlreadyExistsException("Account with phone number already exists");
+        if (account.getPhoneNumber() != null) {
+            validatePhoneNumberUniqueness(account.getPhoneNumber(), null);
         }
 
         return accountPort.create(account);
     }
 
     public Account getById(Long id) {
-        return accountPort.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException("Account with ID " + id + " not found"));
+        return findById(id).orElseThrow(() ->
+                new AccountNotFoundException("Account with ID " + id + " not found"));
     }
 
     public void deleteAccount(Long id) {
-        accountPort.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException("Account with id " + id + " not found"));
-
+        getById(id);
         accountPort.deleteById(id);
     }
 
     public Account updateAccount(Long id, Account updatedAccount) {
-
-        // Comment by S.Eensalu: Before updating, make sure the account exists
-        Account existing = accountPort.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException("Account with id " + id + " not found"));
+        Account existing = getById(id); // Comment by S.Eensalu: Before updating, make sure the account exists
 
         boolean isSameName = updatedAccount.getName() == null || updatedAccount.getName().equals(existing.getName());
         boolean isSamePhone = updatedAccount.getPhoneNumber() == null || updatedAccount.getPhoneNumber().equals(existing.getPhoneNumber());
 
         if (isSameName && isSamePhone) {
-            // Comment by S.Eensalu: Nothing changed — return error
             throw new NothingToUpdateException("No changes provided for update");
         }
 
@@ -56,20 +51,35 @@ public class AccountService {
         }
 
         if (!isSamePhone) {
-            // Comment by S.Eensalu: To show different implementation options, I implement this product in the way,
-            // that phone number is unique (yes, i can use database for unique definition, but let's also try this way),
-            // but here I check if new phone number is already taken
-
-            accountPort.findByPhoneNumber(updatedAccount.getPhoneNumber())
-                    .ifPresent(existingAccount -> {
-                        if (!existingAccount.getId().equals(id)) {
-                            throw new AccountAlreadyExistsException("Phone number already in use");
-                        }
-                    });
-
+            validatePhoneNumberUniqueness(updatedAccount.getPhoneNumber(), id);
             existing.setPhoneNumber(updatedAccount.getPhoneNumber());
         }
 
         return accountPort.update(existing);
+    }
+
+    private Optional<Account> findById(Long id) {
+        return accountPort.findById(id);
+    }
+
+    private Optional<Account> findByPhoneNumber(String phoneNumber) {
+        return accountPort.findByPhoneNumber(phoneNumber);
+    }
+
+    /**
+     * Comment by S.Eensalu
+     * Validates that phone number is not used by another account (except allowedId).
+     * <p>
+     * Business rule:
+     * To support correct "nimemakse" (proxy payment) functionality,
+     * the phone number (if provided) must be unique.
+     * Otherwise, it would be ambiguous to determine which account to pay.
+     */
+    private void validatePhoneNumberUniqueness(String phoneNumber, Long allowedId) {
+        findByPhoneNumber(phoneNumber).ifPresent(existing -> {
+            if (!existing.getId().equals(allowedId)) {
+                throw new AccountAlreadyExistsException("Phone number already in use");
+            }
+        });
     }
 }
