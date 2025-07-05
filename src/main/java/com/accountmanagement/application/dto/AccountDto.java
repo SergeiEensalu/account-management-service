@@ -11,6 +11,6 @@ public class AccountDto {
     private Long id;
     private String name;
     private String phoneNumber;
-    private String created;
-    private String updated;
+    private String created; // ISO format
+    private String updated; // ISO format
 }
