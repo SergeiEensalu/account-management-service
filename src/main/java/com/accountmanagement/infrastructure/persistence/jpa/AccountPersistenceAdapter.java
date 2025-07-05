@@ -30,11 +30,6 @@ public class AccountPersistenceAdapter implements AccountPort {
     }
 
     @Override
-    public List<Account> findAll() {
-        return jpaRepository.findAll().stream().map(this::toDomain).collect(Collectors.toList());
-    }
-
-    @Override
     public void deleteById(Long id) {
         jpaRepository.deleteById(id);
     }
