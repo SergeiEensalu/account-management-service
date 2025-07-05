@@ -6,6 +6,7 @@ import com.accountmanagement.application.response.ApiResponse;
 import com.accountmanagement.domain.model.Account;
 import com.accountmanagement.usecase.CreateAccountUseCase;
 import com.accountmanagement.usecase.GetAccountByIdUseCase;
+import com.accountmanagement.usecase.UpdateAccountUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +18,18 @@ public class AccountController {
 
     private final CreateAccountUseCase createAccountUseCase;
     private final GetAccountByIdUseCase getAccountByIdUseCase;
+    private final UpdateAccountUseCase updateAccountUseCase;
     private final AccountMapper accountMapper;
 
     public AccountController(
             CreateAccountUseCase createAccountUseCase,
             GetAccountByIdUseCase getAccountByIdUseCase,
+            UpdateAccountUseCase updateAccountUseCase,
             AccountMapper accountMapper
     ) {
         this.createAccountUseCase = createAccountUseCase;
         this.getAccountByIdUseCase = getAccountByIdUseCase;
+        this.updateAccountUseCase = updateAccountUseCase;
         this.accountMapper = accountMapper;
     }
 
@@ -47,5 +51,19 @@ public class AccountController {
         // Comment by S.Eensalu: Unified response format.
         return ResponseEntity
                 .ok(ApiResponse.success("Account retrieved successfully", accountMapper.toDto(account)));
+    }
+
+    @PutMapping("/accounts/{id}")
+    public ResponseEntity<ApiResponse<AccountDto>> updateAccount(
+            @PathVariable Long id,
+            @Valid @RequestBody AccountDto dto
+    ) {
+        Account domain = accountMapper.toDomain(dto);
+        Account updated = updateAccountUseCase.execute(id, domain);
+
+        // Comment by S.Eensalu: Unified response format.
+        return ResponseEntity.ok(
+                ApiResponse.success("Account updated successfully", accountMapper.toDto(updated))
+        );
     }
 }

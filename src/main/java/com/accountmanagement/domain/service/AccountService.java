@@ -28,4 +28,14 @@ public class AccountService {
         return accountPort.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException("Account with ID " + id + " not found"));
     }
+
+    public Account updateAccount(Long id, Account updatedAccount) {
+        Account existing = accountPort.findById(id)
+                .orElseThrow(() -> new AccountNotFoundException("Account with id " + id + " not found"));
+
+        existing.setName(updatedAccount.getName());
+        existing.setPhoneNumber(updatedAccount.getPhoneNumber());
+
+        return accountPort.save(existing);
+    }
 }
