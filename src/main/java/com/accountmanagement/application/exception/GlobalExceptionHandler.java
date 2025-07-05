@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
                 ApiResponse.error(
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         "Something went wrong",
-                        List.of(ex.getMessage())
+                        List.of("Unexpected error occurred")
                 )
         );
     }
