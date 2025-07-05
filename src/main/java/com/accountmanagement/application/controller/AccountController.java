@@ -1,6 +1,8 @@
 package com.accountmanagement.application.controller;
 
+import com.accountmanagement.application.dto.AccountCreateDto;
 import com.accountmanagement.application.dto.AccountDto;
+import com.accountmanagement.application.dto.AccountUpdateDto;
 import com.accountmanagement.application.mapper.AccountMapper;
 import com.accountmanagement.application.response.ApiResponse;
 import com.accountmanagement.domain.model.Account;
@@ -34,7 +36,7 @@ public class AccountController {
     }
 
     @PostMapping("/accounts")
-    public ResponseEntity<ApiResponse<AccountDto>> createAccount(@Valid @RequestBody AccountDto dto) {
+    public ResponseEntity<ApiResponse<AccountDto>> createAccount(@Valid @RequestBody AccountCreateDto dto) {
         Account domain = accountMapper.toDomain(dto);
         Account created = createAccountUseCase.execute(domain);
 
@@ -56,7 +58,7 @@ public class AccountController {
     @PutMapping("/accounts/{id}")
     public ResponseEntity<ApiResponse<AccountDto>> updateAccount(
             @PathVariable Long id,
-            @Valid @RequestBody AccountDto dto
+            @Valid @RequestBody AccountUpdateDto dto
     ) {
         Account domain = accountMapper.toDomain(dto);
         Account updated = updateAccountUseCase.execute(id, domain);

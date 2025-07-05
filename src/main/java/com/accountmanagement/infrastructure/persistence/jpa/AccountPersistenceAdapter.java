@@ -54,6 +54,8 @@ public class AccountPersistenceAdapter implements AccountPort {
                 .id(entity.getId())
                 .name(entity.getName())
                 .phoneNumber(entity.getPhoneNumber())
+                .created(entity.getCreated())
+                .updated(entity.getUpdated())
                 .build();
     }
 
