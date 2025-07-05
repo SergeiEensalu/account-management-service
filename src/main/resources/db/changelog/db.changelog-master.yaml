@@ -1,5 +1,8 @@
 databaseChangeLog:
+  - include:
+      file: db/changelog/001-create-account-table.yaml
   - changeSet:
       id: 0
       author: system
-      changes: []
+      changes: [ ]
+
