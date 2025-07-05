@@ -39,6 +39,11 @@ public class AccountPersistenceAdapter implements AccountPort {
         jpaRepository.deleteById(id);
     }
 
+    public Optional<Account> findByPhoneNumber(String phoneNumber) {
+        return jpaRepository.findByPhoneNumber(phoneNumber)
+                .map(this::toDomain);
+    }
+
     private Account toDomain(AccountEntity entity) {
         return Account.builder()
                 .id(entity.getId())

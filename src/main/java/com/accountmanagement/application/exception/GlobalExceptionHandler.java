@@ -2,6 +2,7 @@ package com.accountmanagement.application.exception;
 
 import com.accountmanagement.application.response.ApiResponse;
 
+import com.accountmanagement.domain.exception.AccountAlreadyExistsException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,5 +61,17 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(AccountAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAccountExists(AccountAlreadyExistsException ex) {
+        ApiResponse<Void> response = ApiResponse.<Void>builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message("Account already exists")
+                .errors(List.of(ex.getMessage()))
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }

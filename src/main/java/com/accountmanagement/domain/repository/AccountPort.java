@@ -13,4 +13,6 @@ public interface AccountPort {
     List<Account> findAll();
 
     void deleteById(Long id);
+
+    Optional<Account> findByPhoneNumber(String phoneNumber);
 }

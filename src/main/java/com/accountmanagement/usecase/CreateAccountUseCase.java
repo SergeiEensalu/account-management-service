@@ -2,19 +2,19 @@ package com.accountmanagement.usecase;
 
 
 import com.accountmanagement.domain.model.Account;
-import com.accountmanagement.domain.repository.AccountPort;
+import com.accountmanagement.domain.service.AccountService;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CreateAccountUseCase {
 
-    private final AccountPort accountPort;
+    private final AccountService accountService;
 
-    public CreateAccountUseCase(AccountPort accountPort) {
-        this.accountPort = accountPort;
+    public CreateAccountUseCase(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     public Account execute(Account account) {
-        return accountPort.save(account);
+        return accountService.createAccount(account);
     }
 }
