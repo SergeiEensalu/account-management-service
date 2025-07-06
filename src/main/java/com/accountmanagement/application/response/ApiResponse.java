@@ -1,5 +1,7 @@
 package com.accountmanagement.application.response;
 
+// Comment by S.Eensalu: Second option is to just import 'import lombok.*;';
+// but for better readability and conflicts prevention i prefer to import exactly what I use, not more not less.
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

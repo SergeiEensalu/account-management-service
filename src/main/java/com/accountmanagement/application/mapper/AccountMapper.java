@@ -4,6 +4,9 @@ import com.accountmanagement.application.dto.AccountCreateDto;
 import com.accountmanagement.application.dto.AccountDto;
 import com.accountmanagement.application.dto.AccountUpdateDto;
 import com.accountmanagement.domain.model.Account;
+
+// Comment by S.Eensalu: Second option is to just import 'import org.mapstruct.*';
+// but for better readability and conflicts prevention i prefer to import exactly what I use, not more not less.
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

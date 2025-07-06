@@ -1,19 +1,18 @@
-package com.accountmanagement.usecase;
+package com.accountmanagement.domain.usecase;
 
 import com.accountmanagement.domain.model.Account;
 import com.accountmanagement.domain.service.AccountService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GetAccountByIdUseCase {
-
+public class UpdateAccountUseCase {
     private final AccountService accountService;
 
-    public GetAccountByIdUseCase(AccountService accountService) {
+    public UpdateAccountUseCase(AccountService accountService) {
         this.accountService = accountService;
     }
 
-    public Account execute(Long id) {
-        return accountService.getById(id);
+    public Account execute(Long id, Account updatedAccount) {
+        return accountService.updateAccount(id, updatedAccount);
     }
 }

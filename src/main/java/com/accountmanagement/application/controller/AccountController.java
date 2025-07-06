@@ -6,14 +6,24 @@ import com.accountmanagement.application.dto.AccountUpdateDto;
 import com.accountmanagement.application.mapper.AccountMapper;
 import com.accountmanagement.application.response.ApiResponse;
 import com.accountmanagement.domain.model.Account;
-import com.accountmanagement.usecase.CreateAccountUseCase;
-import com.accountmanagement.usecase.DeleteAccountUseCase;
-import com.accountmanagement.usecase.GetAccountByIdUseCase;
-import com.accountmanagement.usecase.UpdateAccountUseCase;
+import com.accountmanagement.domain.usecase.CreateAccountUseCase;
+import com.accountmanagement.domain.usecase.DeleteAccountUseCase;
+import com.accountmanagement.domain.usecase.GetAccountByIdUseCase;
+import com.accountmanagement.domain.usecase.UpdateAccountUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+
+// Comment by S.Eensalu: Second option is to just import 'import org.springframework.web.bind.annotation.*';
+// but for better readability and conflicts prevention i prefer to import exactly what I use, not more not less.
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequestMapping("/api/v1")

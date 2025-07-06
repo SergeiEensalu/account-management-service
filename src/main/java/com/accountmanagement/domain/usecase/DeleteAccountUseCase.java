@@ -1,4 +1,4 @@
-package com.accountmanagement.usecase;
+package com.accountmanagement.domain.usecase;
 
 import com.accountmanagement.domain.service.AccountService;
 import org.springframework.stereotype.Component;

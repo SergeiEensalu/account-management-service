@@ -1,7 +1,23 @@
 package com.accountmanagement.infrastructure.persistence.jpa;
 
-import jakarta.persistence.*;
-import lombok.*;
+// Comment by S.Eensalu: Second option is to just import 'import jakarta.persistence.*;';
+// but for better readability and conflicts prevention i prefer to import exactly what I use, not more not less.
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+
+// Comment by S.Eensalu: Second option is to just import 'import lombok.*;';
+// but for better readability and conflicts prevention i prefer to import exactly what I use, not more not less.
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
 

@@ -2,7 +2,14 @@ package com.accountmanagement.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.*;
+
+// Comment by S.Eensalu: Second option is to just import 'import lombok.*;';
+// but for better readability and conflicts prevention i prefer to import exactly what I use, not more not less.
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Builder;
 
 @Getter
 @Setter
