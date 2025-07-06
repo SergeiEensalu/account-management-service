@@ -10,6 +10,10 @@ import com.accountmanagement.domain.usecase.CreateAccountUseCase;
 import com.accountmanagement.domain.usecase.DeleteAccountUseCase;
 import com.accountmanagement.domain.usecase.GetAccountByIdUseCase;
 import com.accountmanagement.domain.usecase.UpdateAccountUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +31,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequestMapping("/api/v1")
+@Tag(name = "Accounts", description = "Operations related to account management")
 public class AccountController {
 
     private final CreateAccountUseCase createAccountUseCase;
@@ -50,46 +55,96 @@ public class AccountController {
     }
 
     @PostMapping("/accounts")
+    @Operation(
+            summary = "Create a new account",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "201",
+                            description = "Account created successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiResponse.class)
+                            )
+                    )
+            }
+    )
     public ResponseEntity<ApiResponse<AccountDto>> createAccount(@Valid @RequestBody AccountCreateDto dto) {
         Account domain = accountMapper.toDomain(dto);
         Account created = createAccountUseCase.execute(domain);
-
-        // Comment by S.Eensalu: Unified response format.
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.created("Account created successfully", accountMapper.toDto(created)));
     }
 
-    @GetMapping("/account/{id}")
+    @GetMapping("/accounts/{id}")
+    @Operation(
+            summary = "Get account by ID",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "200",
+                            description = "Account retrieved successfully",
+                            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+                    ),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "404",
+                            description = "Account not found",
+                            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+                    )
+            }
+    )
     public ResponseEntity<ApiResponse<AccountDto>> getAccountById(@PathVariable Long id) {
         Account account = getAccountByIdUseCase.execute(id);
-
-        // Comment by S.Eensalu: Unified response format.
-        return ResponseEntity
-                .ok(ApiResponse.success("Account retrieved successfully", accountMapper.toDto(account)));
+        return ResponseEntity.ok(ApiResponse.success("Account retrieved successfully", accountMapper.toDto(account)));
     }
 
     @PutMapping("/accounts/{id}")
+    @Operation(
+            summary = "Update account",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "200",
+                            description = "Account updated successfully",
+                            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+                    ),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "400",
+                            description = "Validation failed",
+                            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+                    ),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "404",
+                            description = "Account not found",
+                            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+                    )
+            }
+    )
     public ResponseEntity<ApiResponse<AccountDto>> updateAccount(
             @PathVariable Long id,
             @Valid @RequestBody AccountUpdateDto dto
     ) {
         Account domain = accountMapper.toDomain(dto);
         Account updated = updateAccountUseCase.execute(id, domain);
-
-        // Comment by S.Eensalu: Unified response format.
-        return ResponseEntity.ok(
-                ApiResponse.success("Account updated successfully", accountMapper.toDto(updated))
-        );
+        return ResponseEntity.ok(ApiResponse.success("Account updated successfully", accountMapper.toDto(updated)));
     }
 
     @DeleteMapping("/accounts/{id}")
+    @Operation(
+            summary = "Delete account",
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "200",
+                            description = "Account deleted successfully",
+                            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+                    ),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "404",
+                            description = "Account not found",
+                            content = @Content(schema = @Schema(implementation = ApiResponse.class))
+                    )
+            }
+    )
     public ResponseEntity<ApiResponse<Void>> deleteAccount(@PathVariable Long id) {
         deleteAccountUseCase.execute(id);
-
-        // Comment by S.Eensalu: Unified response format.
-        return ResponseEntity.ok(
-                ApiResponse.success("Account deleted successfully", null)
-        );
+        return ResponseEntity.ok(ApiResponse.success("Account deleted successfully", null));
     }
 }
