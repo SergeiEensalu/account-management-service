@@ -71,6 +71,7 @@ public class AccountController {
     public ResponseEntity<ApiResponse<AccountDto>> createAccount(@Valid @RequestBody AccountCreateDto dto) {
         Account domain = accountMapper.toDomain(dto);
         Account created = createAccountUseCase.execute(domain);
+        // Comment by S.Eensalu: Unified response format.
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.created("Account created successfully", accountMapper.toDto(created)));
@@ -94,6 +95,7 @@ public class AccountController {
     )
     public ResponseEntity<ApiResponse<AccountDto>> getAccountById(@PathVariable Long id) {
         Account account = getAccountByIdUseCase.execute(id);
+        // Comment by S.Eensalu: Unified response format.
         return ResponseEntity.ok(ApiResponse.success("Account retrieved successfully", accountMapper.toDto(account)));
     }
 
@@ -124,6 +126,7 @@ public class AccountController {
     ) {
         Account domain = accountMapper.toDomain(dto);
         Account updated = updateAccountUseCase.execute(id, domain);
+        // Comment by S.Eensalu: Unified response format.
         return ResponseEntity.ok(ApiResponse.success("Account updated successfully", accountMapper.toDto(updated)));
     }
 
@@ -145,6 +148,7 @@ public class AccountController {
     )
     public ResponseEntity<ApiResponse<Void>> deleteAccount(@PathVariable Long id) {
         deleteAccountUseCase.execute(id);
+        // Comment by S.Eensalu: Unified response format.
         return ResponseEntity.ok(ApiResponse.success("Account deleted successfully", null));
     }
 }
