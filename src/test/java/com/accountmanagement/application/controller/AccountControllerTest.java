@@ -5,9 +5,6 @@ import com.accountmanagement.application.dto.AccountDto;
 import com.accountmanagement.application.mapper.AccountMapper;
 import com.accountmanagement.domain.model.Account;
 import com.accountmanagement.domain.usecase.CreateAccountUseCase;
-import com.accountmanagement.domain.usecase.DeleteAccountUseCase;
-import com.accountmanagement.domain.usecase.GetAccountByIdUseCase;
-import com.accountmanagement.domain.usecase.UpdateAccountUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,15 +35,6 @@ class AccountControllerTest {
 
     @MockBean
     private CreateAccountUseCase createAccountUseCase;
-
-    @MockBean
-    private GetAccountByIdUseCase getAccountByIdUseCase;
-
-    @MockBean
-    private UpdateAccountUseCase updateAccountUseCase;
-
-    @MockBean
-    private DeleteAccountUseCase deleteAccountUseCase;
 
     @MockBean
     private AccountMapper accountMapper;
